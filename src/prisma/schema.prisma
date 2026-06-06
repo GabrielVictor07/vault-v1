@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String     @id // Supabase Auth ID
+  email         String     @unique
+  name          String?
+  nickname      String?    // Nome público/apelido
+  phone         String?    // Telefone/WhatsApp
+  image         String?
+  plan          String     @default("free") // free, premium
+  status        String     @default("ACTIVE")
+  lastSignIn    DateTime?  // Último acesso realizado
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  favorites     Favorite[]
+  progress      Progress[]
+  accessTokens  AccessToken[]
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  slug        String     @unique
+  prompts     Prompt[]
+  videos      Video[]
+  templates   Template[]
+}
+
+model Prompt {
+  id          String     @id @default(cuid())
+  title       String
+  description String
+  content     String     @db.Text
+  level       String     // Beginner, Intermediate, Advanced
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  favorites     Favorite[]
+}
+
+model Video {
+  id          String     @id @default(cuid())
+  title       String
+  description String
+  url         String
+  thumbnail   String?
+  module      String     // e.g., "Como usar IA"
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  duration    Int?       // in seconds
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  progress      Progress[]
+}
+
+model Template {
+  id          String     @id @default(cuid())
+  title       String
+  description String
+  previewUrl  String?
+  downloadUrl String
+  tags        String[]
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  promptId  String
+  prompt    Prompt   @relation(fields: [promptId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, promptId])
+}
+
+model Progress {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  videoId   String
+  video     Video    @relation(fields: [videoId], references: [id])
+  progress  Int      @default(0) // percentage or seconds
+  completed Boolean  @default(false)
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, videoId])
+}
+
+model SystemSettings {
+  id              String   @id @default("global")
+  allowSignups    Boolean  @default(true)
+  maintenanceMode Boolean  @default(false)
+  checkoutUrl     String   @default("https://checkout.cakto.com.br/vault-premium")
+  updatedAt       DateTime @updatedAt
+}
+
+model CaktoSale {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  status    String
+  plan      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AccessToken {
+  id          String    @id @default(cuid())
+  userId      String
+  tokenHash   String    @unique
+  type        String    // password_reset, first_access, resend_access, email_change
+  expiresAt   DateTime
+  usedAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
