@@ -100,7 +100,7 @@ export async function getModuleProgresses() {
       prisma.progress.findMany({ where: { userId: user.id } }),
     ]);
 
-    const progressMap = new Map(userProgress.map(p => [p.videoId, p.completed]));
+    const progressMap = new Map(userProgress.map((p: any) => [p.videoId, p.completed]));
 
     const moduleStats: Record<string, { total: number; completed: number }> = {};
 
@@ -185,11 +185,11 @@ export async function getVideoPlayerDetails(videoId: string) {
     const progresses = await prisma.progress.findMany({
       where: {
         userId: user.id,
-        videoId: { in: playlist.map(v => v.id) }
+        videoId: { in: playlist.map((v: any) => v.id) }
       }
     });
 
-    const progressMap = new Map(progresses.map(p => [p.videoId, p]));
+    const progressMap = new Map(progresses.map((p: any) => [p.videoId, p]));
 
     return {
       video,
