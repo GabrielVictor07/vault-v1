@@ -100,7 +100,7 @@ export async function getUserFavorites() {
       orderBy: { createdAt: "desc" },
     });
 
-    return favorites.map(f => f.prompt);
+    return favorites.map((f: any) => f.prompt);
   } catch (error) {
     console.error("Erro ao buscar favoritos:", error);
     return [];
@@ -120,7 +120,7 @@ export async function getFavoriteIds() {
       select: { promptId: true },
     });
 
-    return favorites.map(f => f.promptId);
+    return favorites.map((f: any) => f.promptId);
   } catch (error) {
     console.error("Erro ao buscar ids de favoritos:", error);
     return [];
