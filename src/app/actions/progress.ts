@@ -189,7 +189,7 @@ export async function getVideoPlayerDetails(videoId: string) {
       }
     });
 
-    const progressMap = new Map(progresses.map((p: any) => [p.videoId, p]));
+    const progressMap = new Map<string, any>(progresses.map((p: any) => [p.videoId, p]));
 
     return {
       video,
