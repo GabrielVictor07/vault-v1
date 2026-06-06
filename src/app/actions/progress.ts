@@ -104,7 +104,7 @@ export async function getModuleProgresses() {
 
     const moduleStats: Record<string, { total: number; completed: number }> = {};
 
-    videos.forEach(video => {
+    videos.forEach((video: any) => {
       const mod = video.module || "Geral";
       if (!moduleStats[mod]) {
         moduleStats[mod] = { total: 0, completed: 0 };
@@ -193,7 +193,7 @@ export async function getVideoPlayerDetails(videoId: string) {
 
     return {
       video,
-      playlist: playlist.map(v => ({
+      playlist: playlist.map((v: any) => ({
         ...v,
         completed: progressMap.get(v.id)?.completed || false,
         progress: progressMap.get(v.id)?.progress || 0,
