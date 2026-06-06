@@ -90,8 +90,8 @@ export async function getDashboardData() {
     }
 
     const recentContent = [
-      ...recentPrompts.map(p => ({ ...p, type: "Prompt" })),
-      ...recentVideos.map(v => ({ ...v, type: "Vídeo" })),
+      ...recentPrompts.map((p: any) => ({ ...p, type: "Prompt" })),
+      ...recentVideos.map((v: any) => ({ ...v, type: "Vídeo" })),
     ].sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return {

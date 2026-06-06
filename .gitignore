@@ -44,3 +44,5 @@ next-env.d.ts
 
 # local email logs
 temp-emails.log
+
+.vercel
